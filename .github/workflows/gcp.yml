@@ -9,9 +9,8 @@ env:
   GAR_LOCATION: asia-south1
   REPOSITORY: google-kubernetes
   IMAGE: google-kubernetes-image
-#  GKE_CLUSTER: my-cluster
+  GKE_CLUSTER: my-cluster
   GKE_LOCATION: asia-south1
-#  DEPLOYMENT_NAME: gke-test
 
 jobs:
   setup-build-publish-deploy:
@@ -47,16 +46,12 @@ jobs:
           password: ${{ secrets.SERVICE_ACCOUNT_KEY }}
 
       # Build the Docker image
-      - name: Build
+      - name: Docker Build
         run: docker build . --file Dockerfile --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA"
 
       # Publish the Docker image to Google Artifact Registry
-      - name: Publish
+      - name: Docker Publish
         run: docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA"
-
-      # Deploy the Docker image to the GKE cluster
-      - name: Deploy
-        run: kubectl get services -o wide
 
       - id: auth
         uses: google-github-actions/auth@v1
@@ -72,4 +67,4 @@ jobs:
 
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
-        run: kubectl apply -f deployment.yaml; kubectl rollout status deployment/google-kubernetes; kubectl get services -o wide
+        run: kubectl apply -f kubernetes/deployment.yaml; kubectl rollout status deployment/google-kubernetes; kubectl get services -o wide
