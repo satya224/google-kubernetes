@@ -1,0 +1,61 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "google-kubernetes"
+  namespace: "default"
+  labels:
+    app: "google-kubernetes"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "google-kubernetes"
+  template:
+    metadata:
+      labels:
+        app: "google-kubernetes"
+    spec:
+      containers:
+        - name: "google-kubernetes-image-sha256-1"
+          image: "asia-south1-docker.pkg.dev/my-kubernetes-project-392907/google-kubernetes/google-kubernetes-image@sha256:7d56a0244265106070b373b826c1036698597afc2aedebcccc45270319f01e2b"
+
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "google-kubernetes-hpa"
+  namespace: "default"
+  labels:
+    app: "google-kubernetes"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "google-kubernetes"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: "Resource"
+      resource:
+        name: "cpu"
+        target:
+          type: "Utilization"
+          averageUtilization: 80
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "google-kubernetes-service"
+  namespace: "default"
+  labels:
+    app: "google-kubernetes"
+spec:
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 8080
+  selector:
+    app: "google-kubernetes"
+  type: "LoadBalancer"
+
