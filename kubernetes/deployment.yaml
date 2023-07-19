@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: "google-kubernetes-image-sha256-1"
-          image: "asia-south1-docker.pkg.dev/my-kubernetes-project-392907/google-kubernetes/google-kubernetes-image@sha256:7d56a0244265106070b373b826c1036698597afc2aedebcccc45270319f01e2b"
+          image: __IMAGE__
 
 ---
 apiVersion: "autoscaling/v2"
@@ -33,7 +33,7 @@ spec:
     name: "google-kubernetes"
     apiVersion: "apps/v1"
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 3
   metrics:
     - type: "Resource"
       resource:

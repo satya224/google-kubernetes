@@ -12,7 +12,16 @@ public class GoogleController {
     @GetMapping("get-message")
     public Response<String> getMessage() {
         return new Response<>(
-                "App is working",
+                "App is working!",
+                "success",
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("hello")
+    public Response<String> getHello() {
+        return new Response<>(
+                "Hello World!",
                 "success",
                 HttpStatus.OK
         );
