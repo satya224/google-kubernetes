@@ -21,7 +21,7 @@ public class GoogleController {
     @GetMapping("hello")
     public Response<String> getHello() {
         return new Response<>(
-                "Hello World!",
+                "Hello World Again!",
                 "success",
                 HttpStatus.OK
         );
