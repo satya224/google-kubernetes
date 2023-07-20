@@ -66,6 +66,11 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_LOCATION }}
 
-      # Deploy the Docker image to the GKE cluster
-      - name: Deploy
+      # Deploy the Database Docker image to the GKE cluster
+      - name: Deploy Database
+        run: cat kubernetes/db-deployment.yaml | sed "s/__MYSQL_ROOT_PASSWORD_VALUE__/root/g" | sed "s/__MYSQL_DATABASE_NAME__/kubernetes_db/g" | kubectl apply -f - ; kubectl rollout status deployment/mysql ; kubectl get services mysql -o wide
+
+
+      # Deploy the Spring Boot Application Docker image to the GKE cluster
+      - name: Deploy Spring Boot Application
         run: cat kubernetes/deployment.yaml | sed "s/__IMAGE__/$GAR_LOCATION-docker.pkg.dev\/$PROJECT_ID\/$REPOSITORY\/$IMAGE:$GITHUB_SHA/g" | kubectl apply -f - ; kubectl rollout status deployment/$DEPLOYMENT_NAME ; kubectl get services $DEPLOYMENT_NAME-service -o wide
